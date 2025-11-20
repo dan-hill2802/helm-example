@@ -25,8 +25,8 @@ jobs:
         uses: azure/setup-helm@v3
       - name: Configure Git
         run: |
-          git config user.name "helm-bot"
-          git config user.email "helm-bot@users.noreply.github.com"
+          git config user.name "$GITHUB_ACTORt"
+          git config user.email "$GITHUB_ACTOR@users.noreply.github.com"
       - name: install helm-docs
         run: |
           cd /tmp
@@ -57,8 +57,8 @@ jobs:
           charts_dir: charts
           config: './.github/configs/cr.yaml'
         env:
-          CR_TOKEN: '${{ secrets.GITHUB_TOKEN }}'
-          CR_RELEASE_NAME_TEMPLATE: '{{ .Version }}-helm'
+          CR_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
+          CR_RELEASE_NAME_TEMPLATE: "{{ .Version }}-helm"
 
       - uses: sigstore/cosign-installer@v3.5.0
       - name: Push chart to GHCR
