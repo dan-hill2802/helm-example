@@ -5,16 +5,16 @@ on:
     branches:
       - main
 env:
-  HELM_DOCS_VERSION: '1.14.2'
+  HELM_DOCS_VERSION: '4.0.0'
 
 permissions: read-all
 
 jobs:
   publish:
     permissions:
-      contents: write # for helm/chart-releaser-action to push chart release and create a release
-      packages: write # for helm/chart-releaser-action to push chart release and create a release
-      id-token: write # for helm/chart-releaser-action to push chart release and create a release
+      contents: write
+      packages: write
+      id-token: write
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -51,14 +51,14 @@ jobs:
           registry: ghcr.io
           username: ${ GITHUB_REPOSITORY_OWNER }
           password: ${{ secrets.GITHUB_TOKEN }}
-      - name: Run chart-releaser
-        uses: helm/chart-releaser-action@v1.6.0
-        with:
-          charts_dir: charts
-          config: './.github/configs/cr.yaml'
-        env:
-          CR_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
-          CR_RELEASE_NAME_TEMPLATE: "{{ .Version }}-helm"
+#      - name: Run chart-releaser
+#        uses: helm/chart-releaser-action@v1.6.0
+#        with:
+#          charts_dir: charts
+#          config: './.github/configs/cr.yaml'
+#        env:
+#          CR_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
+#          CR_RELEASE_NAME_TEMPLATE: "{{ .Version }}-helm"
 
       - uses: sigstore/cosign-installer@v3.5.0
       - name: Push chart to GHCR
@@ -71,6 +71,6 @@ jobs:
             helm push "${pkg}" oci://ghcr.io/"${GITHUB_REPOSITORY_OWNER}"/charts |& tee .digest
             cosign sign --yes $(cat .digest | awk -F "[, ]+" '/Pushed/{print $NF}')
           done
-      - uses: oras-project/setup-oras@v1
-        with:
-          version: 1.2.0
+#      - uses: oras-project/setup-oras@v1
+#        with:
+#          version: 1.2.0
